@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, AtSign, Lock, EyeOff, Eye, Compass, AlertCircle, CheckCircle, Loader2, Chrome, Apple, Facebook, Gift, Zap, Users, Mountain, Waves, Building, Heart, Camera } from 'lucide-react';
 import { Button } from '../components/ui/Button';
+import { useAuth } from '../contexts/AuthContext';
 
 const travelVibes = [
   { id: 'solo', label: 'Solo Explorer', icon: User, color: 'from-blue-400 to-cyan-500', description: 'Independent adventures' },
@@ -15,6 +16,7 @@ const travelVibes = [
 
 const SignupPage: React.FC = () => {
   const navigate = useNavigate();
+  const { signup } = useAuth();
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -86,16 +88,15 @@ const SignupPage: React.FC = () => {
       setErrors({ terms: 'Please agree to the terms and conditions' });
       return;
     }
-    
+
     setIsLoading(true);
     setErrors({});
-    
+
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      // Success - redirect to onboarding or dashboard
+      await signup(formData.fullName, formData.email, formData.password);
       navigate('/');
-    } catch (err) {
-      setErrors({ submit: 'Something went wrong. Please try again.' });
+    } catch (err: any) {
+      setErrors({ submit: err.message || 'Something went wrong. Please try again.' });
     } finally {
       setIsLoading(false);
     }

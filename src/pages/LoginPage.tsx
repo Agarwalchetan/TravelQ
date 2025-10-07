@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AtSign, Lock, EyeOff, Eye, Compass, AlertCircle, CheckCircle, Loader2, User, Mail, Chrome, Apple, Facebook } from 'lucide-react';
 import { Button } from '../components/ui/Button';
+import { useAuth } from '../contexts/AuthContext';
 
 const travelImages = [
   {
@@ -27,6 +28,7 @@ const travelImages = [
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -50,14 +52,12 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-    
-    // Simulate login process
+
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      // Success toast would be shown here
+      await login(email, password);
       navigate('/');
-    } catch (err) {
-      setError('Invalid email or password. Please try again.');
+    } catch (err: any) {
+      setError(err.message || 'Invalid email or password. Please try again.');
     } finally {
       setIsLoading(false);
     }
